@@ -1,7 +1,9 @@
-from rest_framework import generics
-from .models import Anuncio
-from .serializers import AnuncioListSerializer, AnuncioDetailSerializer, AnuncioCreateUpdateSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from django.shortcuts import get_object_or_404
+from .models import Anuncio, Foto
+from .serializers import (AnuncioListSerializer,AnuncioDetailSerializer,AnuncioCreateUpdateSerializer,FotoSerializer)
 from .permissions import IsOwnerOrReadOnly
 
 class AnuncioListView(generics.ListAPIView):
@@ -30,3 +32,40 @@ class AnuncioDeleteView(generics.DestroyAPIView):
     queryset = Anuncio.objects.all()
     serializer_class = AnuncioDetailSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+class FotoUploadView(generics.CreateAPIView):
+    queryset = Foto.objects.all()
+    serializer_class = FotoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, anuncio_id):
+        anuncio = get_object_or_404(Anuncio, id=anuncio_id)
+
+        if anuncio.owner != request.user:
+            return Response(
+                {"detail": "Você não é o dono deste anúncio."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = FotoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(anuncio=anuncio)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class FotoDeleteView(generics.DestroyAPIView):
+    queryset = Foto.objects.all()
+    serializer_class = FotoSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+
+    def perform_destroy(self, instance):
+        instance.imagem.delete(save=False)
+        super().perform_destroy(instance)
+
+
+class FotoListView(generics.ListAPIView):
+    serializer_class = FotoSerializer
+
+    def get_queryset(self):
+        anuncio_id = self.kwargs.get("anuncio_id")
+        return Foto.objects.filter(anuncio_id=anuncio_id).order_by("ordem")
