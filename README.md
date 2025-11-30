@@ -53,29 +53,9 @@ Excluir foto (autenticado + dono)
 
 Upload em multipart/form-data
 
-## 📁 Estrutura do Projeto
-supportveiculos-backend/
-│
-├── anuncios/
-│   ├── migrations/
-│   ├── models.py
-│   ├── serializers.py
-│   ├── permissions.py
-│   ├── views.py
-│   ├── urls.py
-│   └── tests.py (não utilizado)
-│
-├── core/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-│
-├── media/
-└── manage.py
-
 ## ⚙️ Instalação e Setup
 ## 1️⃣ Clone o projeto
-git clone https://github.com/seu-repo/supportveiculos-backend.git
+git clone https://github.com/lucastamborim/supportveiculos-backend.git
 cd supportveiculos-backend
 
 ## 2️⃣ Crie o ambiente virtual
@@ -206,13 +186,20 @@ Servidas automaticamente em DEBUG=True.
 
 ## 🌐 Rotas principais
 /api/anuncios/                         → CRUD de anúncios
+
 /api/anuncios/<id>/adicionar_foto/     → upload de foto
+
 /api/anuncios/<id>/listar_fotos/       → lista fotos
+
 /api/anuncios/<id>/deletar-foto/<id>/  → remove foto
 
+
 /api/auth/users/                       → registro
+
 /api/auth/jwt/create/                  → login
+
 /api/auth/jwt/refresh/                 → refresh token
+
 
 ## 🚀 Preparando para Deploy (Checklist)
 
