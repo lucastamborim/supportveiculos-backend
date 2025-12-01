@@ -13,7 +13,7 @@ class AnuncioListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Anuncio
-        fields = ['id', 'marca', 'modelo', 'ano', 'preco', 'foto_principal', 'owner']
+        fields = ['id', 'marca', 'modelo', 'ano', 'preco', 'foto_principal', 'owner', 'km']
 
     def get_foto_principal(self, obj): #metodo customizado para buscar a primeira foto ( foto principal )
         foto = obj.fotos.order_by('ordem').first() #pega a primeira foto relacionada a este anuncio
